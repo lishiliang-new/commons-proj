@@ -1,0 +1,50 @@
+{	
+    "allow_tags": [
+        "a","abbr","acronym","address","area","article","aside","audio",
+        "b","bdi","big","blockquote","br",
+        "caption","cite","code","col","colgroup",
+        "datalist","dd","del","details","div","dl","dt",
+        "em",
+        "fieldset","figcaption","figure","footer",
+        "h1","h2","h3","h4","h5","h6","hr",
+        "i","img","li","ins",
+        "ol",
+        "p","pre",
+        "q",
+        "ul",
+        "small","span"
+    ],
+    "allow_properties":[
+        "style","title"
+    ],
+    "special_properties": {
+        "a":["href"],
+        "img":["src"]
+    },
+    "protocols": {
+        "a": {
+            "href":["#","http","https","ftp","mailto"]
+        },
+        "blockquote":{
+        	"cite":["http","https"]
+        },
+        "cite":{
+        	"cite":["http","https"]
+        },
+        "q":{
+        	"cite":["http","https"]
+        }
+    },
+    "fixed_properties":{
+    	"tag":{
+    		"attr":"value"
+    	}
+    },
+    "desc":{
+        "allow_tags":"仅仅允许使用的标签",
+        "allow_properties":"所有标签都允许使用的属性",
+        "special_properties":"特殊标签允许使用的特殊属性",
+        "protocols":"特殊标签,特殊属性,仅仅允许使用指定的协议",
+        "fixed":"特殊标签,必须会添加的固定属性与值(会覆盖原来的)"
+    }
+}

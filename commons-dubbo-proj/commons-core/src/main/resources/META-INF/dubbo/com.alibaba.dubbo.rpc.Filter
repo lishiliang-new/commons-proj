@@ -1,0 +1,3 @@
+dubboExceptionFilter=com.lishiliang.core.filter.DubboExceptionFilter
+dubboLoggerFilter=com.lishiliang.core.filter.DubboLoggerFilter
+dubboClientLoggerFilter=com.lishiliang.core.filter.DubboClientLoggerFilter
