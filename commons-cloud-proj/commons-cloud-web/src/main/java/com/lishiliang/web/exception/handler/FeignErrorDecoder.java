@@ -1,6 +1,7 @@
-package com.lishiliang.core.exception;
+package com.lishiliang.web.exception.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lishiliang.core.exception.BusinessRuntimeException;
 import feign.Response;
 import feign.Util;
 import feign.codec.ErrorDecoder;
@@ -19,15 +20,16 @@ public class FeignErrorDecoder implements ErrorDecoder {
 
     @Override
     public Exception decode(String methodKey, Response response) {
+
+        JSONObject jsonObject = null;
         try {
             // 这里拿到服务端抛出的异常信息
             String message = Util.toString(response.body().asReader());
-            JSONObject jsonObject = JSONObject.parseObject(message);
-            return new BusinessRuntimeException(jsonObject.getString("code") , String.format("|%s %s", methodKey, jsonObject.getString("msg")));
+            jsonObject = JSONObject.parseObject(message);
 
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        return decode(methodKey, response);
+        throw  new BusinessRuntimeException(jsonObject.getString("code") , String.format("|%s %s", methodKey, jsonObject.getString("msg")));
     }
 }
