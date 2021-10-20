@@ -8,11 +8,11 @@
     <artifactId>commons-dubbo-proj</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>commons-core</module>
-        <module>commons-db</module>
-        <module>commons-sharding-db</module>
-        <module>commons-web</module>
-        <module>commons-model</module>
+        <module>commons-dubbo-core</module>
+        <module>commons-dubbo-db</module>
+        <module>commons-dubbo-sharding-db</module>
+        <module>commons-dubbo-web</module>
+        <module>commons-dubbo-model</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -190,22 +190,22 @@
             </dependency> -->
             <dependency>
                 <groupId>com.lishiliang</groupId>
-                <artifactId>commons-core</artifactId>
+                <artifactId>commons-dubbo-core</artifactId>
                 <version>${project.verison}</version>
             </dependency>
             <dependency>
                 <groupId>com.lishiliang</groupId>
-                <artifactId>commons-db</artifactId>
+                <artifactId>commons-dubbo-db</artifactId>
                 <version>${project.verison}</version>
             </dependency>
             <dependency>
                 <groupId>com.lishiliang</groupId>
-                <artifactId>commons-sharding-db</artifactId>
+                <artifactId>commons-dubbo-sharding-db</artifactId>
                 <version>${project.verison}</version>
             </dependency>
             <dependency>
                 <groupId>com.lishiliang</groupId>
-                <artifactId>commons-web</artifactId>
+                <artifactId>commons-dubbo-web</artifactId>
                 <version>${project.verison}</version>
             </dependency>
             <dependency>
