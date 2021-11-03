@@ -1,11 +1,11 @@
-package com.lishiliang.core.model;
+package com.lishiliang.model;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 
-public class DataModel implements Serializable {
+public class DataModel<T> implements Serializable {
     
     private static final long serialVersionUID = -3922593565045634123L;
     
@@ -18,14 +18,11 @@ public class DataModel implements Serializable {
      * 数据的总记录数
      */
     private long count;
-    /**
-     * 当前页码的数据
-     */
-    private List<?> dataList;
+
     /**
      * 返回对象数据
      */
-    private Object data;
+    private T data;
     /**
      * 附加数据
      */
@@ -70,19 +67,11 @@ public class DataModel implements Serializable {
         this.count = count;
     }
     
-    public List<?> getDataList() {
-        return dataList;
-    }
-
-    public void setDataList(List<?> dataList) {
-        this.dataList = dataList;
-    }
-
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 

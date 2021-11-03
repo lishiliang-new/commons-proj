@@ -23,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.util.StringUtils;
@@ -55,16 +56,26 @@ public class FastJsonHttpMessageConverterImpl extends FastJsonHttpMessageConvert
     }
 
     /**
-     * 过滤请求中的xss字符
+     * 过滤返回的xss字符
      */
     @Override
     public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage)
         throws IOException, HttpMessageNotReadableException {
 
+        //若是feign本地调用的结果则不做后续处理
+//        if (inputMessage.getHeaders().containsKey("feign")) {
+//            return super.read(contextClass, inputMessage);
+//        }
+
         InputStream in = inputMessage.getBody();
         //得到请求的json
         String input = IOUtils.toString(in, StandardCharsets.UTF_8);
         String parseJson = JsoupUtils.clean(input);
+
+        //如果是以文本格式返回则直接返回(todo 非json处理)
+        if (String.class.getName().equals(type.getTypeName()) || inputMessage.getHeaders().getContentType().includes(MediaType.TEXT_PLAIN)) {
+            return parseJson;
+        }
 
         try {
             //以下代码，从FastJsonHttpMessageConverter类中copy

@@ -1,6 +1,6 @@
 package com.lishiliang.model;
 
-public class Enums {
+public class CommonsEnums {
 
     /**
      * @author lisl

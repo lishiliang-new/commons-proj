@@ -6,7 +6,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import com.lishiliang.core.model.DataModel;
+import com.lishiliang.model.DataModel;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Arrays;

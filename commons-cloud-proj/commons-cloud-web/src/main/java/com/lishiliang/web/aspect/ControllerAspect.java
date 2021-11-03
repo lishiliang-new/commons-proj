@@ -1,22 +1,17 @@
 package com.lishiliang.web.aspect;
 
-
-import com.lishiliang.core.model.DataModel;
 import com.lishiliang.core.utils.Builder;
 import com.lishiliang.core.utils.Context;
 import com.lishiliang.core.utils.Utils;
+import com.lishiliang.model.DataModel;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -63,13 +58,20 @@ public class ControllerAspect {
      */
     @AfterReturning(returning="dataModel", pointcut="controllerPointcut()")
     public Object afterReturning(JoinPoint point, DataModel dataModel) {
-        
-        
-        Builder<Map<String, Object>> builder = Builder.ofDefault(dataModel.getAdditionalData(), HashMap<String, Object>::new)
+
+        Builder<Map> builder = Builder.ofDefault(dataModel.getAdditionalData(), HashMap<String, Object>::new)
                 .with(Map::put, Context.TRACE_ID, Context.getCurrentContextTraceId());
         Context.removeTraceId();
-        
+
         return Builder.of(dataModel).with(DataModel::setAdditionalData, builder.build()).build();
+
+    }
+
+    @AfterThrowing(throwing = "e", pointcut = "controllerPointcut()")
+    public void doAfterThrowing(JoinPoint joinPoint, Throwable e) {
+        //todo
+        logger.error(e.getMessage());
+
     }
 
 }

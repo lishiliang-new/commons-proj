@@ -1,12 +1,18 @@
 package com.lishiliang.core.interceptor;
 
 import com.lishiliang.core.utils.Context;
+import com.lishiliang.core.utils.IpUtils;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author lisl
@@ -16,6 +22,19 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class FeignInterceptor  {
+
+    @Value("${spring.application.name}")
+    private String applicationName;
+
+    @Value("${server.port}")
+    private String serverPort;
+
+    private String ip = IpUtils.getIp();
+
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+    @Autowired
+    private HttpServletResponse httpServletResponse;
 
     /**
      * 添加全链路追踪traceId
@@ -44,7 +63,7 @@ public class FeignInterceptor  {
         return new RequestInterceptor() {
             @Override
             public void apply(RequestTemplate template) {
-                template.header("feign", "true");
+                template.header("feign", String.format("request %s[%s:%s]", applicationName, ip, serverPort));
             }
         };
     }

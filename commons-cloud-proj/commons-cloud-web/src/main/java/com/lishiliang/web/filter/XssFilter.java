@@ -26,9 +26,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.lishiliang.core.utils.Context;
+import com.lishiliang.core.utils.IpUtils;
+import com.lishiliang.core.utils.SpringUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.lishiliang.web.request.XssHttpServletRequestWrapper;
+import org.springframework.core.env.Environment;
 
 /**
  * @author lisl
@@ -58,8 +61,10 @@ public class XssFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
-        //若请求中存在traceId 则代表是内部feign调用 则不进行后续过滤
+        //若请求中存在traceId,feign 则代表是内部feign调用 则不进行后续过滤
         if (req.getHeader(Context.TRACE_ID) != null && req.getHeader("feign") != null) {
+            Environment env = SpringUtils.getBean(Environment.class);
+            resp.setHeader("feign", String.format("response %s[%s:%s]", env.getProperty("spring.application.name"), IpUtils.getIp(), env.getProperty("server.port")));
             chain.doFilter(request, response);
             return;
         }
