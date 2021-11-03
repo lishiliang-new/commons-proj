@@ -10,6 +10,7 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Pointcut;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.powermock.api.mockito.PowerMockito;
@@ -104,21 +105,20 @@ public class BaseMockitoTest {
             List<Method> methods = MethodUtils.getMethodsListWithAnnotation(clientClass, RequestMapping.class);
             for (Method method : methods) {
                 try {
-                    //可变参数 不好处理 暂时先处理5个参数的
                     Class<?>[] pts = method.getParameterTypes();
                     int parameterCount = method.getParameterCount();
                     if (parameterCount == 0) {
                         PowerMockito.when(client, method).withNoArguments().thenAnswer((data)->doAnswer(data, ip));
-                    } else if (parameterCount == 1) {
-                        PowerMockito.when(client, method).withArguments(any(pts[0])).thenAnswer((data)->doAnswer(data, ip));
-                    } else if (parameterCount == 2){
-                        PowerMockito.when(client, method).withArguments(any(pts[0]), any(pts[1])).thenAnswer((data)->doAnswer(data, ip));
-                    } else if (parameterCount == 3){
-                        PowerMockito.when(client, method).withArguments(any(pts[0]), any(pts[1]), any(pts[2])).thenAnswer((data)->doAnswer(data, ip));
-                    } else if (parameterCount == 4){
-                        PowerMockito.when(client, method).withArguments(any(pts[0]), any(pts[1]), any(pts[2]), any(pts[3])).thenAnswer((data)->doAnswer(data, ip));
-                    } else if (parameterCount == 5){
-                        PowerMockito.when(client, method).withArguments(any(pts[0]), any(pts[1]), any(pts[2]), any(pts[3]), any(pts[4])).thenAnswer((data)->doAnswer(data, ip));
+                    }
+//                    else if (parameterCount == 1) {
+//                        PowerMockito.when(client, method).withArguments(any(pts[0])).thenAnswer((data)->doAnswer(data, ip));
+//                    }
+                    else {
+                        Object[] anys = new Object[pts.length];
+                        for (int i = 0; i < pts.length; i++) {
+                            anys[i] = any(pts[i]);
+                        }
+                        Mockito.when(method.invoke(client, anys)).thenAnswer((data)->doAnswer(data, ip));
                     }
                 } catch (Exception e) {
                     logger.info(String.format("%s|%s|msg: %s", client.getClass().getName(), method.getName(), e.getMessage()));
