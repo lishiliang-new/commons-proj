@@ -9,40 +9,38 @@
  
 package com.lishiliang.db.datasource;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+ import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+ import com.github.pagehelper.PageInterceptor;
+ import com.p6spy.engine.spy.P6DataSource;
+ import org.apache.ibatis.plugin.Interceptor;
+ import org.apache.ibatis.session.SqlSessionFactory;
+ import org.mybatis.spring.SqlSessionFactoryBean;
+ import org.mybatis.spring.SqlSessionTemplate;
+ import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.annotation.Qualifier;
+ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+ import org.springframework.boot.context.properties.ConfigurationProperties;
+ import org.springframework.context.annotation.Bean;
+ import org.springframework.context.annotation.Configuration;
+ import org.springframework.context.annotation.Primary;
+ import org.springframework.core.env.Environment;
+ import org.springframework.core.io.Resource;
+ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+ import org.springframework.core.io.support.ResourcePatternResolver;
+ import org.springframework.jdbc.core.JdbcTemplate;
+ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+ import org.springframework.transaction.support.TransactionTemplate;
+ import org.springframework.util.StringUtils;
 
-import javax.sql.DataSource;
-
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.StringUtils;
-
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
-import com.github.pagehelper.PageInterceptor;
-import com.p6spy.engine.spy.P6DataSource;
+ import javax.sql.DataSource;
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.List;
+ import java.util.Properties;
 
 
 @Configuration
@@ -155,6 +153,7 @@ public class MultiDruidDataSourceAutoConfiguration {
      * @throws Exception
      */
     @Bean(name = "primarySqlSessionFactory")
+    @Primary
     public SqlSessionFactory primarySqlSessionFactory(@Qualifier("primarySpyDataSource") DataSource dataSource) throws Exception {
     
         logger.info("阿里Druid数据源创建主库连接工厂");
@@ -202,6 +201,7 @@ public class MultiDruidDataSourceAutoConfiguration {
      * @return
      */
     @Bean(name="primarySqlSessionTemplate")
+    @Primary
     public SqlSessionTemplate primarySqlSessionTemplate(@Qualifier("primarySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
