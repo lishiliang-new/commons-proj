@@ -1,10 +1,10 @@
 
  /**
  * @Title: CustomerDateParamHandler.java 
- * @Package:com.lishiliang.framework.dubbo.web.exception.handler
+ * @Package:com.lishiliang.dubbo.web.exception.handler
  * @desc: TODO  
  * @author: lisl    
- * @date:2018年12月19日 上午11:42:58    
+ * @date
  */
  
 package com.lishiliang.web.exception.handler;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 /**    
  * @desc: 解决SpringMVC Date类型数据绑定参数时的异常（含日期格式、前端输入为空）
  * @author: lisl  
- * @date:2018年12月19日 上午11:42:58  
+ * @date
  */
 @ControllerAdvice
 public class CustomerDateParamHandler {

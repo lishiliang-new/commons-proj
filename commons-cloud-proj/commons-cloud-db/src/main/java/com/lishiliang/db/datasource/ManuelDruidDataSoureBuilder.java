@@ -1,10 +1,10 @@
 
  /**
  * @Title: ManuelDruidDataSoureConfiguration.java 
- * @Package:com.lishiliang.framework.dubbo.db.datasource
+ * @Package:com.lishiliang.dubbo.db.datasource
  * @desc: TODO  
  * @author: lisl
- * @date:2019年4月8日 下午4:06:45    
+ * @date
  */
  
 package com.lishiliang.db.datasource;

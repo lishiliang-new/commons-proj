@@ -3,7 +3,7 @@
  * @Package:com.lishiliang.store.mgr.web.util
  * @desc: TODO
  * @author: lisl
- * @date:2018年10月17日 上午9:44:20
+ * @date
  */
 
 package com.lishiliang.web.exception.util;

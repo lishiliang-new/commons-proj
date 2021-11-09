@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 
 /**
  * @desc: 自定义Dubbo异常过滤工具(指定了activate的group，则filter升级为系统级，将会自动加入到filte链中执行)
- * @date:2018年12月14日 下午3:18:34
+ * @date
  */
 @Activate(group = Constants.PROVIDER)
 public class DubboExceptionFilter implements Filter {

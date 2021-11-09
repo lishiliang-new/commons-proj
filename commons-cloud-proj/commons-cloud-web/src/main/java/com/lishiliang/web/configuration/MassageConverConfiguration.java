@@ -1,10 +1,10 @@
 
 /**
 * @Title: MassageConverConfiguration.java 
-* @Package:com.lishiliang.framework.core.configuration
+* @Package:com.lishiliang.core.configuration
 * @desc: TODO  
 * @author: lisl    
-* @date:2019年9月17日 下午3:02:15    
+* @date
 */
 
 package com.lishiliang.web.configuration;

@@ -1,10 +1,10 @@
 
  /**
  * @Title: ShardingDBUtils.java 
- * @Package:com.lishiliang.framework.sharding.util
+ * @Package:com.lishiliang.sharding.util
  * @desc: TODO  
  * @author: lisl    
- * @date:2019年12月10日 下午5:13:06    
+ * @date
  */
  
 package com.lishiliang.util;

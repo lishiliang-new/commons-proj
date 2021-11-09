@@ -1,10 +1,10 @@
 
  /**
  * @Title: ShardingBaseDao.java 
- * @Package:com.lishiliang.framework.sharding.db.dao
+ * @Package:com.lishiliang.sharding.db.dao
  * @desc: TODO  
  * @author: lisl
- * @date:2019年8月22日 下午1:23:04    
+ * @date
  */
 
  package com.lishiliang.db.dao;

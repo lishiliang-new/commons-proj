@@ -1,10 +1,10 @@
 
  /**
  * @Title: LoginUserSession.java 
- * @Package:com.lishiliang.framework.dubbo.web.session
+ * @Package:com.lishiliang.dubbo.web.session
  * @desc: TODO  
  * @author: lisl
- * @date:2018年12月12日 下午6:37:06    
+ * @date
  */
  
 package com.lishiliang.web.exception.session;

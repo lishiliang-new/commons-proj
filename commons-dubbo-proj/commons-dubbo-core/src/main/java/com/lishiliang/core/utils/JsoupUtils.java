@@ -1,10 +1,10 @@
 
  /**
  * @Title: JsoupUtils.java 
- * @Package:com.lishiliang.framework.core.utils
+ * @Package:com.lishiliang.core.utils
  * @desc: TODO  
  * @author: lisl    
- * @date:2020年7月13日 上午11:59:55    
+ * @date
  */
 
  package com.lishiliang.core.utils;

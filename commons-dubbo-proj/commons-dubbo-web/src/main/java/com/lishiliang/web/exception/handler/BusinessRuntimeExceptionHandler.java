@@ -4,7 +4,7 @@
  * @Package:com.superq.framework.core.exception   
  * @desc: TODO  
  * @author: lisl
- * @date:2018年4月9日 下午8:34:52    
+ * @date
  */
  
 package com.lishiliang.web.exception.handler;
@@ -27,7 +27,7 @@ package com.lishiliang.web.exception.handler;
 /**    
  * @desc: 公共异常统一处理类
  * @author: lisl
- * @date:2018年4月9日 下午8:34:52  
+ * @date
  */
 @ControllerAdvice
 public class BusinessRuntimeExceptionHandler {

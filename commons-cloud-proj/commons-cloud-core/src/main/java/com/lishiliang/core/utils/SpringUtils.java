@@ -1,10 +1,10 @@
 
 /**
  * @Title: SpringUtils.java
- * @Package:com.lishiliang.framework.core.utils
+ * @Package:com.lishiliang.core.utils
  * @desc: TODO
  * @author: lisl    
- * @date:2019年9月18日 上午10:54:31    
+ * @date
  */
 
 package com.lishiliang.core.utils;

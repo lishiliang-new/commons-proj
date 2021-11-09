@@ -1,10 +1,10 @@
 
  /**
  * @Title: FastJsonHttpMessageConverterImpl.java 
- * @Package:com.lishiliang.framework.web.support.spring
+ * @Package:com.lishiliang.web.support.spring
  * @desc: TODO  
  * @author: lisl    
- * @date:2019年9月29日 上午10:00:17    
+ * @date
  */
  
 package com.lishiliang.web.support.spring;

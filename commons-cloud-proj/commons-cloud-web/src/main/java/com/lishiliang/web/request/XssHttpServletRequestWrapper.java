@@ -1,10 +1,10 @@
 
 /**
  * @Title: XssHttpServletRequestWrapper.java
- * @Package:com.lishiliang.framework.web.request
+ * @Package:com.lishiliang.web.request
  * @desc: TODO
  * @author: lisl
- * @date:2020年7月13日 下午1:06:55
+ * @date
  */
 
 package com.lishiliang.web.request;

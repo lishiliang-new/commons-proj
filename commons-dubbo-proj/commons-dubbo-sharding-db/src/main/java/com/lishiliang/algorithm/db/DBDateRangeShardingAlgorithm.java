@@ -1,10 +1,10 @@
 
  /**
  * @Title: DateRangeShardingAlgorithm.java 
- * @Package:com.lishiliang.framework.sharding.algorithm
+ * @Package:com.lishiliang.sharding.algorithm
  * @desc: TODO  
  * @author: lisl
- * @date:2019年8月22日 上午9:20:07    
+ * @date
  */
 
  package com.lishiliang.algorithm.db;

@@ -3,7 +3,7 @@
  * @Package:com.lishiliang.store.mgr.web.util
  * @desc: TODO
  * @author: lisl
- * @date:2018年10月17日 上午9:44:20
+ * @date
  */
 
 package com.lishiliang.web.exception.util;
@@ -24,7 +24,7 @@ import org.springframework.http.ResponseEntity;
 /**
  * @desc: 工具类
  * @author: lisl
- * @date:2018年10月17日 上午9:44:20
+ * @date
  */
 
 public class Utils {

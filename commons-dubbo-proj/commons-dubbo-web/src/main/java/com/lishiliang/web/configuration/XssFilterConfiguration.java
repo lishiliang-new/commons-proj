@@ -1,10 +1,10 @@
 
 /**
  * @Title: XssFilterConfiguration.java
- * @Package:com.lishiliang.framework.web.configuration
+ * @Package:com.lishiliang.web.configuration
  * @desc: TODO
  * @author: lisl
- * @date:2020年7月13日 下午1:59:57
+ * @date
  */
 
 package com.lishiliang.web.configuration;
