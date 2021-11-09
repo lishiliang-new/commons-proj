@@ -24,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 /**
  * @desc: 工具类
  * @author: lisl
- * @date:2018年10月17日 上午9:44:20
  */
 
 public class Utils {

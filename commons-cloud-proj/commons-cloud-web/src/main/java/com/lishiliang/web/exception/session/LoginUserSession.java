@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 /**    
  * @desc: 登录用户的Session
  * @author: lisl
- * @date:2018年12月12日 下午6:37:06  
  */
 @Scope(value="session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Component

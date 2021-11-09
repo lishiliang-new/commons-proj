@@ -1,10 +1,8 @@
 
  /**
- * @Title: RedisConfig.java 
- * @Package:com.lishiliang.partnerin.web
+ * @Title: RedisConfig.java
  * @desc: TODO  
  * @author: lisl
- * @date:2019年4月29日 下午3:06:53    
  */
  
 package com.lishiliang.db.redis;

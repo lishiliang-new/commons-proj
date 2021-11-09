@@ -16,7 +16,7 @@ import java.util.Set;
 public class RegistryExcludeFilter implements AutoConfigurationImportFilter {
 
     /**
-     * 排除这两个配置  可以实现多注册中心 等效
+     * 排除一下两个配置  可以实现多注册中心 等效
      * // 多注册中心 需要排除exclude = {AutoServiceRegistrationAutoConfiguration.class}
      * @SpringBootApplication(exclude = {AutoServiceRegistrationAutoConfiguration.class}) 排除后的影响面 需要启动@EnableDiscoveryClient并且AutoServiceRegistrationProperties中的failFast 字段失效
      */

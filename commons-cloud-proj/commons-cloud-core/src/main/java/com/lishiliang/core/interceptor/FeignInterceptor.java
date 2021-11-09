@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author lisl
@@ -33,8 +32,6 @@ public class FeignInterceptor  {
 
     @Autowired
     private HttpServletRequest httpServletRequest;
-    @Autowired
-    private HttpServletResponse httpServletResponse;
 
     /**
      * 添加全链路追踪traceId
