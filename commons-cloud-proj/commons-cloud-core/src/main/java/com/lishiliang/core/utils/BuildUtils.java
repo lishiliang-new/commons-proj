@@ -3,76 +3,74 @@ package com.lishiliang.core.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.lishiliang.model.DataModel;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.ibatis.session.ResultContext;
+import org.apache.ibatis.session.ResultHandler;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
 
 public final class BuildUtils {
 
 
-    //去空 去null splitter
-    public static final Splitter splitter = Splitter.on(",").trimResults().omitEmptyStrings();
-
-    //去null joiner
-    public static final Joiner joiner = Joiner.on(",").skipNulls();
-
 
 
     /**
-     * @return
+     * 通用构建DataModel工具类
      */
-    public static DataModel bulidDataModel() {
+    public static class DataModelBuilder {
+        /**
+         * @return
+         */
+        public static DataModel build() {
 
-        return bulidDataModel(null);
-    }
+            return build(null);
+        }
 
-    /**
-     * @param obj
-     * @param msg 自定义 msg
-     * @return
-     */
-    public static DataModel bulidDataModel(Object obj, String msg) {
+        /**
+         * @param obj
+         * @param msg 自定义 msg
+         * @return
+         */
+        public static DataModel build(Object obj, String msg) {
 
-        return Builder.of(bulidDataModel(obj)).with(DataModel::setMsg, msg).build();
-    }
+            return Builder.of(build(obj)).with(DataModel::setMsg, msg).build();
+        }
 
-    /**
-     * 构建 DataModel
-     * @param obj
-     * @return
-     */
-    public static DataModel bulidDataModel(Object obj) {
+        /**
+         * 构建 DataModel
+         * @param obj
+         * @return
+         */
+        public static DataModel build(Object obj) {
 
-        DataModel dataModel = new DataModel();
-        dataModel.setMsg("操作完成");
-        if (obj == null) {
+            DataModel dataModel = new DataModel();
+            dataModel.setMsg("操作完成");
+            if (obj == null) {
+                return dataModel;
+            }
+            //PageInfo类型处理
+            if (obj instanceof PageInfo) {
+                PageInfo pageInfo = (PageInfo)obj;
+                dataModel.setCount(pageInfo.getTotal());
+                dataModel.setData(pageInfo.getList());
+            } else {
+                dataModel.setData(obj);
+            }
+
             return dataModel;
         }
-        //PageInfo类型处理
-        if ("com.github.pagehelper.PageInfo".equalsIgnoreCase(obj.getClass().getName())) {
-            Map map = JSON.parseObject(JSON.toJSONString(obj));
-            dataModel.setCount((Integer)map.get("total"));
-            dataModel.setData(map.get("list"));
-        } else {
-            dataModel.setData(obj);
-        }
-
-        return dataModel;
     }
 
 
     /**
      * 通用构建sql工具类
      */
-    public static class SqlBuildUtils {
+    public static class SqlBuilder {
 
 
         /**
@@ -221,9 +219,112 @@ public final class BuildUtils {
 
             return buildInSql(Arrays.asList(inList), colunm, params , appendAnd);
         }
-        
 
     }
 
+    /**
+     * Mapper对resultHandler参数 自定义结果处理器的 的构建器
+     * fixme 传入resultHandler流式查询  返回值必须是void才生效
+     */
+    public static class ResultContainerBuilder {
+
+
+        public static <T, R> ResultHandler<T> withResultOne(Consumer<T> action, R resultContainer) {
+            return ResultContainer.build(action, resultContainer);
+        }
+
+
+        public static <T, R> ResultHandler<T> withResultList(Consumer<T> action, List<R> resultListContainer) {
+
+            return ResultContainer.build(action, resultListContainer);
+        }
+
+
+        /**
+         * @param action 本次操作 (单参数)
+         * @param <T> 泛型 T=原始行数据
+         * @return
+         */
+        public static <T> ResultContainer<T, PageInfo<T>> withPageInfo(Consumer<T> action) {
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(new ArrayList());
+            return ResultContainer.build(action, pageInfo);
+        }
+
+        /**
+         * @param action 本次操作 (单参数)
+         * @param <T> 泛型 T=原始行数据
+         * @return
+         */
+        public  <T> ResultHandler<T> withPageInfo(Consumer<T> action, PageInfo<T> pageInfoContainer) {
+
+            return ResultContainer.build(action, pageInfoContainer);
+        }
+
+
+        /**
+         * @param action 本次操作 (单参数)
+         * @param <T> 泛型 T=原始行数据
+         * @return
+         */
+        public static  <T, R> ResultHandler<T> withMap(Consumer<T> action, R mapContainer) {
+
+            return ResultContainer.build(action, mapContainer);
+        }
+
+    }
+
+
+
+
+    /**
+     * mybatis流式查询结果容器
+     * @param <T, R> 行泛型,返回值泛型
+     */
+    public static class ResultContainer<T, R> implements ResultHandler<T> {
+
+        private R resultObject;
+        //前一行数据
+        private T preRow;
+        //当前行号
+        private int rowNum = 1;
+
+        //对行数据操作
+        private final Consumer<T> action;
+
+        private boolean isPageInfo = false;
+
+        public ResultContainer(Consumer<T> action, R container) {
+            this.action = action;
+            this.resultObject = container;
+            this.isPageInfo = container instanceof PageInfo;
+        }
+
+
+        public static <T, R> ResultContainer build(Consumer<T> action, R container) {
+            return new ResultContainer(action, container);
+        }
+
+
+        @Override
+        public void handleResult(ResultContext<? extends T> resultContext) {
+            T t = resultContext.getResultObject();
+            preRow = t;
+            action.accept(t);
+            if (isPageInfo) {
+                PageInfo pageInfo = (PageInfo)resultObject;
+                pageInfo.getList().add(t);
+            }
+            rowNum++;
+        }
+
+        public R getResultObject() {
+            return resultObject;
+        }
+
+        public Consumer<T> getAction() {
+            return action;
+        }
+    }
 
 }
