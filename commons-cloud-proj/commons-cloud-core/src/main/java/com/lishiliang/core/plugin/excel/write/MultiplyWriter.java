@@ -40,7 +40,6 @@ public class MultiplyWriter {
     private Map<SXSSFSheet,XSSFSheet> _sxFromXHash;
     private Map<XSSFSheet,SXSSFSheet> _xFromSxHash;
     private boolean isFinished;
-    private Map<SXSSFSheet, SheetDataWriter> sheetDataWriterMap= new HashMap<>();
 
     public MultiplyWriter(SXSSFWorkbook workbook) {
         Objects.requireNonNull(workbook);
@@ -50,7 +49,7 @@ public class MultiplyWriter {
             _sxFromXHash = (HashMap)FieldUtils.readDeclaredField(workbook, "_sxFromXHash", true);
             _xFromSxHash = (HashMap) FieldUtils.readDeclaredField(workbook, "_xFromSxHash", true);
         } catch (Exception e) {
-
+            logger.error(e.getMessage());
         }
     }
 
@@ -62,6 +61,11 @@ public class MultiplyWriter {
         isFinished = finished;
     }
 
+    /**
+     * @see SXSSFWorkbook#write
+     * @param stream
+     * @throws Exception
+     */
     public void multiplyWrite(OutputStream stream) throws Exception {
         //Save the template
         File tmplFile = TempFile.createTempFile("poi-sxssf-multiply-template", ".xlsx");
@@ -89,6 +93,10 @@ public class MultiplyWriter {
         this.isFinished = true;
     }
 
+    /**
+     * @see SXSSFWorkbook#injectData
+     * @throws Exception
+     */
     protected void multiplyInjectData(ZipEntrySource zipEntrySource, OutputStream out) throws Exception {
         ZipArchiveOutputStream zos = new ZipArchiveOutputStream(out);
         try {
@@ -138,11 +146,7 @@ public class MultiplyWriter {
      * @throws Exception
      */
     private InputStream getWorksheetXMLInputStreamNotClose(SXSSFSheet sxSheet) throws Exception {
-        SheetDataWriter sheetDataWriter = sheetDataWriterMap.get(sxSheet);
-        if (sheetDataWriter == null) {
-            sheetDataWriter = (SheetDataWriter) FieldUtils.readDeclaredField(sxSheet, "_writer", true);
-            sheetDataWriterMap.put(sxSheet, sheetDataWriter);
-        }
+        SheetDataWriter sheetDataWriter = (SheetDataWriter) FieldUtils.readDeclaredField(sxSheet, "_writer", true);
         return sheetDataWriter.getWorksheetXMLInputStream();
     }
 
@@ -295,7 +299,7 @@ public class MultiplyWriter {
     {
         logger.info("结束sheet表：{}", sheet.getSheetName());
 
-        SheetDataWriter sheetDataWriter = sheetDataWriterMap.get(sheet);
+        SheetDataWriter sheetDataWriter = (SheetDataWriter) FieldUtils.readDeclaredField(sheet, "_writer", true);
         Writer _out = (Writer) FieldUtils.readDeclaredField(sheetDataWriter, "_out", true);
         //刷新Writer中余留数据
         _out.flush();

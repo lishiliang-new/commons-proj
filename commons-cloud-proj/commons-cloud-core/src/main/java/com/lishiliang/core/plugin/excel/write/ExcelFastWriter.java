@@ -10,6 +10,8 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -35,36 +37,62 @@ public class ExcelFastWriter {
      * @return
      */
     public void writeExcel(String outFile, SheetInfo sheetInfo) {
-
-        final SXSSFWorkbook workbook = new SXSSFWorkbook();
-        final MultiplyWriter multiplyWriter = new MultiplyWriter(workbook);
-
         FileOutputStreamWapper out = null;
-        try  {
-            out = new FileOutputStreamWapper(outFile);
-            //开启查询
-            sheetInfo.getRsHandler().queryStart();
-
-            //初始化工作簿的sheet表
-            List<SXSSFSheet> sheets = new ArrayList<>();
-            for (int i = 0; i < sheetInfo.getTotalSheet(); i++) {
-                sheets.add(crateSheet(workbook, sheetInfo));
-            }
-
-            //创建一个导出任务
-            Runnable task = createTask(workbook, multiplyWriter, sheets ,sheetInfo);
-            //执行任务 （向临时文件持久化数据）
-            new Thread(task).start();
-            logger.info("开始刷盘");
-            //循环从临时文件的输入流写入到输出流中 直到multiplyFinished终止（即不再向临时文件持久化数据的时候终止）
-            multiplyWriter.multiplyWrite(out);
-            logger.info("导出结束");
+        try {
+            writeExcelWithOutputStream(out = new FileOutputStreamWapper(outFile), sheetInfo);
         } catch (Exception e) {
             logger.error("report excel error msg：{}", e.getMessage());
             throw new BusinessRuntimeException(ErrorCodes.ERROR_FILE_REPORT.getCode(), ErrorCodes.ERROR_FILE_REPORT.getDesc(), e.getMessage(), e);
         } finally {
             out.relClose();
         }
+
+    }
+
+    public void writeExcel(OutputStream out, SheetInfo sheetInfo) {
+
+        try  {
+            writeExcelWithOutputStream(out, sheetInfo);
+        } catch (Exception e) {
+            logger.error("report excel error msg：{}", e.getMessage());
+            throw new BusinessRuntimeException(ErrorCodes.ERROR_FILE_REPORT.getCode(), ErrorCodes.ERROR_FILE_REPORT.getDesc(), e.getMessage(), e);
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                logger.error("close error msg：{}", e.getMessage());
+            }
+        }
+
+    }
+
+    /**
+     * @desc
+     * @param out
+     * @return
+     */
+    public void writeExcelWithOutputStream(OutputStream out, SheetInfo sheetInfo) throws Exception {
+
+        final SXSSFWorkbook workbook = new SXSSFWorkbook();
+        final MultiplyWriter multiplyWriter = new MultiplyWriter(workbook);
+
+        //开启查询
+        sheetInfo.getRsHandler().queryStart();
+
+        //初始化工作簿的sheet表
+        List<SXSSFSheet> sheets = new ArrayList<>();
+        for (int i = 0; i < sheetInfo.getTotalSheet(); i++) {
+            sheets.add(crateSheet(workbook, sheetInfo));
+        }
+
+        //创建一个导出任务
+        Runnable task = createTask(workbook, multiplyWriter, sheets ,sheetInfo);
+        //执行任务 （向临时文件持久化数据）
+        new Thread(task).start();
+        logger.info("开始刷盘");
+        //循环从临时文件的输入流写入到输出流中 直到multiplyFinished终止（即不再向临时文件持久化数据的时候终止）
+        multiplyWriter.multiplyWrite(out);
+        logger.info("导出结束");
 
     }
 
