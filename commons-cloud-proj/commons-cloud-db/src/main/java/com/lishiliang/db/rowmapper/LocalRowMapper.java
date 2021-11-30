@@ -6,6 +6,8 @@ import com.lishiliang.core.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.lang.Nullable;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -25,7 +27,16 @@ public class LocalRowMapper<T> implements RowMapper<T> {
     private Class<?> targetClazz;
     
     private HashMap<String, Field> fieldMap;
-    
+
+
+    private int columnCount;
+    @Nullable
+    private int[] columnTypes;
+    @Nullable
+    private String[] columnNames;
+    @Nullable
+    private String[] columnChangeNames;
+
     public LocalRowMapper(Class<?> targetClazz) {
     
         this.targetClazz = targetClazz;
@@ -41,33 +52,51 @@ public class LocalRowMapper<T> implements RowMapper<T> {
     
     @Override
     public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-    
+
+        if (rowNum == 0) {
+
+            logger.info("开始进行映射");
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            this.columnCount = rsmd.getColumnCount();
+            this.columnTypes = new int[this.columnCount];
+            this.columnNames = new String[this.columnCount];
+            this.columnChangeNames = new String[this.columnCount];
+            for (int i = 0; i < this.columnCount; i++) {
+                this.columnTypes[i] = rsmd.getColumnType(i + 1);
+                //数据库表字段为单词和下划线
+                this.columnNames[i] = JdbcUtils.lookupColumnName(rsmd, i + 1);
+                //将数据库字段名改为驼峰
+                String columnChangeName = JdbcUtils.convertUnderscoreNameToPropertyName(this.columnNames[i]);
+                this.columnChangeNames[i] = fieldMap.containsKey(columnChangeName) ? columnChangeName : null;
+            }
+            // could also get column names
+        }
+
+        return processRow(rs, rowNum);
+    }
+
+
+    private T processRow(ResultSet rs, int rowNum) {
         T obj = null;
-        
+
         try {
             obj = (T) targetClazz.newInstance();
-            
-            final ResultSetMetaData metaData = rs.getMetaData();
-            int columnLength = metaData.getColumnCount();
-            String columnName = null;
-            
-            for (int i = 1; i <= columnLength; i++) {
-                //数据库表字段为单词和下划线
-                //columnName = metaData.getColumnName(i);
-                columnName = metaData.getColumnLabel(i);
-                
-                //将数据库字段名改为驼峰
-                String columnChangeName = Utils.lineToHump(columnName);
-                
-                if(!fieldMap.containsKey(columnChangeName)){
-                    //若model中未定义所有的字段时，不做处理
+
+            for (int i = 0; i < columnCount; i++) {
+
+                String columnName = this.columnNames[i];
+                String columnChangeName = this.columnChangeNames[i];
+
+                if(columnChangeName == null){
+                    //若model中未定义该字段时，不做处理
                     continue;
                 }
                 //model中的字段名为驼峰
                 Class fieldClazz = fieldMap.get(columnChangeName).getType();
                 Field field = fieldMap.get(columnChangeName);
                 field.setAccessible(true);
-                
+
                 // fieldClazz == Character.class || fieldClazz == char.class
                 if (fieldClazz == int.class || fieldClazz == Integer.class) { // int
                     Object value = rs.getObject(columnName);

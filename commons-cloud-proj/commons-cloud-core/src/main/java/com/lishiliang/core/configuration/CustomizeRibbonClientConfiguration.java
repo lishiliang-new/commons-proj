@@ -56,7 +56,7 @@ public class CustomizeRibbonClientConfiguration {
 
     private IClientConfig getIClientConfig() throws Exception {
         //@see FeignAspect
-        this.serviceId = ((String)request.getAttribute("from-to")).split("-to>>>")[1];
+        this.serviceId = ((String)request.getAttribute("from-to")).split("===>to:")[1];
         return DefaultClientConfigImpl.Builder.newBuilder(serviceId).build();
     }
 

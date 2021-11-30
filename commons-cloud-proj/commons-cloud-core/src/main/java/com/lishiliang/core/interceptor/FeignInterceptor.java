@@ -30,8 +30,8 @@ public class FeignInterceptor  {
 
     private String ip = IpUtils.getIp();
 
-    @Autowired
-    private HttpServletRequest httpServletRequest;
+    @Autowired(required = false)
+    private HttpServletRequest request;
 
     /**
      * 添加全链路追踪traceId
@@ -61,6 +61,18 @@ public class FeignInterceptor  {
             @Override
             public void apply(RequestTemplate template) {
                 template.header("feign", String.format("request %s[%s:%s]", applicationName, ip, serverPort));
+            }
+        };
+    }
+
+    @Bean
+    @ConditionalOnClass({RequestInterceptor.class, Feign.class})
+    public RequestInterceptor TargetUrlIterceptor() {
+
+        return new RequestInterceptor() {
+            @Override
+            public void apply(RequestTemplate template) {
+                template.header("targetUrl", (String) request.getAttribute("targetUrl"));
             }
         };
     }

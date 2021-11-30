@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +39,7 @@ public class FeignAspect {
     @Value("${server.port}")
     private String serverPort;
 
-    @Autowired
+    @Autowired(required = false)
     private HttpServletRequest request;
 
     private final Map<Class, String> msgCache = new HashMap<>();
@@ -55,18 +57,28 @@ public class FeignAspect {
 
         String msg = getFromCache(((MethodSignature) point.getSignature()).getMethod().getDeclaringClass());
         request.setAttribute("from-to", msg);
+
+        RequestMapping cra = AnnotationUtils.findAnnotation(((MethodSignature) point.getSignature()).getMethod().getDeclaringClass(), RequestMapping.class);
+        RequestMapping cma = AnnotationUtils.findAnnotation(((MethodSignature) point.getSignature()).getMethod(), RequestMapping.class);
+        String targetUrl = cma.path()[0];
+        if (cra != null) {
+            targetUrl = cra.path()[0] + targetUrl;
+        }
+
+        request.setAttribute("targetUrl", targetUrl);
         logger.info("开始进行远程调用: {}", msg);
 
         return point.proceed();
     }
 
     private String getFromCache(Class<?> clazz) {
+
         String msg = msgCache.get(clazz);
         if (msg == null) {
             FeignClient annotation = AnnotationUtils.findAnnotation(clazz, FeignClient.class);
             if (annotation != null) {
                 String provideName = annotation.name();
-                msg = String.format("from <<<%s[%s:%s]-to>>>%s", clientName, IpUtils.getIp(), serverPort, provideName);
+                msg = String.format(" from:%s[%s:%s] ===>to:%s", clientName, IpUtils.getIp(), serverPort, provideName);
                 msgCache.put(clazz, msg);
             }
         }

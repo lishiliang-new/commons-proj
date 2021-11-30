@@ -26,7 +26,7 @@ import java.util.Map;
 @Component
 public class ControllerAspect {
 
-    @Autowired
+    @Autowired(required = false)
     private HttpServletRequest request;
 
     private static final Logger logger = LoggerFactory.getLogger(ControllerAspect.class);
