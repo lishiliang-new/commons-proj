@@ -143,7 +143,7 @@ public class ExcelFastWriter {
                         //使用一个新的sheet
                         sheet = sheets.remove(0);
                         headerLength = createHeader(workbook, sheet, sheetInfo);
-                        rowNum = createHeader(workbook, sheet, sheetInfo);
+                        rowNum = headerLength;
                     }
                 }
 
