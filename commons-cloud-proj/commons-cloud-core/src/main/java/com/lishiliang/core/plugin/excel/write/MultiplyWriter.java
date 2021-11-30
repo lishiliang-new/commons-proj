@@ -15,6 +15,8 @@ import org.apache.poi.xssf.streaming.SheetDataWriter;
 import org.apache.poi.xssf.usermodel.XSSFChartSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +33,8 @@ import java.util.Objects;
  * fixme 大部分copy自SXSSFWorkbook 主要实现输入流和输出流同时进行
  */
 public class MultiplyWriter {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExcelFastWriter.class);
 
     private final XSSFWorkbook _wb;
     private Map<SXSSFSheet,XSSFSheet> _sxFromXHash;
@@ -244,8 +248,9 @@ public class MultiplyWriter {
             outWriter.flush();
         }
         //Copy the worksheet data to "out".
-//        out = new BufferedOutputStream(out);
+        out = new BufferedOutputStream(out);
         // fixme 这里是重点
+        logger.info("复制当前 sheet表：{}", sxSheet.getSheetName());
         while (!sxSheet.areAllRowsFlushed()){
             copy(bufferedInputStream, out);
         }
@@ -288,6 +293,8 @@ public class MultiplyWriter {
     //FIXME
     public void flushWriter(SXSSFSheet sheet) throws Exception
     {
+        logger.info("结束sheet表：{}", sheet.getSheetName());
+
         SheetDataWriter sheetDataWriter = sheetDataWriterMap.get(sheet);
         Writer _out = (Writer) FieldUtils.readDeclaredField(sheetDataWriter, "_out", true);
         //刷新Writer中余留数据
@@ -296,6 +303,8 @@ public class MultiplyWriter {
         sheet.flushRows();
         //关闭
         _out.close();
+
+        logger.info("sheet表：{} 结束成功", sheet.getSheetName());
     }
 
 

@@ -19,6 +19,7 @@ import java.util.concurrent.BlockingQueue;
  * @version 1.0
  * @date 2021-11-26 16:51
  * @desc : 高效excel导出 并且不会造成oom
+ * fixme 使用该工具类datasource必须支持流式查询 即url需要添加useCursorFetch=true参数 如：jdbc:mysql://127.0.0.1.153?autoReconnect=true&useUnicode=true&characterEncoding=UTF8&rewriteBatchedStatements=true&useCursorFetch=true"
  */
 public class ExcelFastWriter {
 
@@ -155,10 +156,11 @@ public class ExcelFastWriter {
             }
 
         } catch (Exception e) {
+            finished(workbook, multiplyWriter, false);
             throw new BusinessRuntimeException(ErrorCodes.ERR_PARAM.getCode(), e.getMessage());
-        } finally {
-            finished(workbook, multiplyWriter);
         }
+
+        finished(workbook, multiplyWriter, true);
 
     }
 
@@ -176,10 +178,11 @@ public class ExcelFastWriter {
      * 删除临时文件
      * @param workbook
      * @param multiplyWriter
+     * @param
      */
-    public void finished(SXSSFWorkbook workbook, MultiplyWriter multiplyWriter){
-//        while (!multiplyWriter.isFinished()){
-//        }
+    public void finished(SXSSFWorkbook workbook, MultiplyWriter multiplyWriter, boolean always){
+        while (always && !multiplyWriter.isFinished()){
+        }
         workbook.dispose();
     }
 
