@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 public class SheetInfo {
 
     @NonNull
-    private ResultSetHandler rsHandler;
+    private ExcelResultSetHandler rsHandler;
 
     private String sheetName = "sheet";
 
@@ -38,11 +38,11 @@ public class SheetInfo {
         return sheetName;
     }
 
-    public SheetInfo(@NonNull ResultSetHandler rsHandler) {
+    public SheetInfo(@NonNull ExcelResultSetHandler rsHandler) {
         this.rsHandler = rsHandler;
     }
 
-    public ResultSetHandler getRsHandler() {
+    public ExcelResultSetHandler getRsHandler() {
         return rsHandler;
     }
 

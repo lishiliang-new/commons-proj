@@ -109,9 +109,10 @@ public class ExcelFastWriter {
         return newCellStyle;
     }
 
+
     private void createRow(SXSSFWorkbook workbook, MultiplyWriter multiplyWriter, List<SXSSFSheet> sheets, SheetInfo sheetInfo) {
         try {
-            ResultSetHandler rsHandler = sheetInfo.getRsHandler();
+            ExcelResultSetHandler rsHandler = sheetInfo.getRsHandler();
             BlockingQueue<List<String[]>> queue = rsHandler.getQueue();
 
             SXSSFSheet sheet = sheets.remove(0);
@@ -156,7 +157,7 @@ public class ExcelFastWriter {
         } catch (Exception e) {
             throw new BusinessRuntimeException(ErrorCodes.ERR_PARAM.getCode(), e.getMessage());
         } finally {
-            finished(workbook);
+            finished(workbook, multiplyWriter);
         }
 
     }
@@ -174,9 +175,10 @@ public class ExcelFastWriter {
     /**
      * 删除临时文件
      * @param workbook
+     * @param multiplyWriter
      */
-    public void finished(SXSSFWorkbook workbook){
-//        while (!workbook.isFinished()){
+    public void finished(SXSSFWorkbook workbook, MultiplyWriter multiplyWriter){
+//        while (!multiplyWriter.isFinished()){
 //        }
         workbook.dispose();
     }

@@ -20,9 +20,9 @@ import java.util.concurrent.TimeUnit;
  * @author lisl
  * 用于jdbc流式查询的处理器
  */
-public class ResultSetHandler {
+public class ExcelResultSetHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResultSetHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExcelResultSetHandler.class);
 
     //最终存储数据 rows
     private List<String[]> resultObject = new LinkedList<>();
@@ -66,12 +66,12 @@ public class ResultSetHandler {
     private Set<String> excludePropertyNames = new HashSet<>();
 
 
-    public ResultSetHandler(DataSource dataSource, String sql, Object[] params) {
+    public ExcelResultSetHandler(DataSource dataSource, String sql, Object[] params) {
         this.dataSource = dataSource;
         this.sql = sql;
         this.params = params;
     }
-    public ResultSetHandler(DataSource dataSource, String sql) {
+    public ExcelResultSetHandler(DataSource dataSource, String sql) {
         this.dataSource = dataSource;
         this.sql = sql;
     }
@@ -80,7 +80,7 @@ public class ResultSetHandler {
         return targetClazz;
     }
 
-    public ResultSetHandler targetClazz(Class<?> targetClazz) {
+    public ExcelResultSetHandler targetClazz(Class<?> targetClazz) {
         this.targetClazz = targetClazz;
         fieldMap = new HashMap<>();
         Field[] fields = targetClazz.getDeclaredFields();
@@ -250,7 +250,7 @@ public class ResultSetHandler {
     }
 
 
-    public ResultSetHandler batchSize(int batchSize) {
+    public ExcelResultSetHandler batchSize(int batchSize) {
         this.batchSize = batchSize;
         return this;
     }
