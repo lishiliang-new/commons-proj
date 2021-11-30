@@ -259,6 +259,8 @@ public class MultiplyWriter {
             copy(bufferedInputStream, out);
         }
         copy(bufferedInputStream, out);
+        out.flush();
+
         outWriter.write("</sheetData>");
         outWriter.flush();
         //Copy the rest of "in" to "out".

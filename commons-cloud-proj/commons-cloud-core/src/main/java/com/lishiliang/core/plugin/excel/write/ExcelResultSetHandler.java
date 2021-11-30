@@ -187,7 +187,7 @@ public class ExcelResultSetHandler {
                     handlerResultSet(rs);
 
                 } catch (Exception e) {
-                    logger.error("查询异常：{}" + e.getMessage(), e);
+                    logger.error("查询异常：{}" , e.getMessage());
                     throw new BusinessRuntimeException(ErrorCodes.DB_ROW_MAPPER_ERROR.getCode(), ErrorCodes.DB_ROW_MAPPER_ERROR.getDesc());
                 } finally {
                     queryStart = false;
