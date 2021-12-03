@@ -160,6 +160,8 @@ public class ExcelFastWriter {
                     }
                     //刷新数据到临时文件
                     sheet.flushRows(data.size());
+                    data.clear();
+                    data = null;
                     if (rowNum >= sheetInfo.getTotalRows() + headerLength) {
                         if (sheets.size() == 0) {
                             rsHandler.setStop(true);

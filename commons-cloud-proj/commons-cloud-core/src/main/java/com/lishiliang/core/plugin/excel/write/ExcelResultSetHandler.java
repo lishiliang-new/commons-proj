@@ -35,7 +35,7 @@ public class ExcelResultSetHandler {
     //sql 条件参数
     private Object[] params = new Object[]{};
     //流式查询每次拉取数据库数量
-    int fetchSize = 10000;
+    private int fetchSize = 10000;
 
     //队列中一批数量
     private int batchSize = 5000;
@@ -149,7 +149,7 @@ public class ExcelResultSetHandler {
             resultObject.add(row);
 
         } catch (Exception e) {
-            logger.error("映射异常：rowNum{} msg {}" + e.getMessage(), rowNum, e);
+            logger.error("映射异常：rowNum{} msg {}" , rowNum, e.getMessage());
             throw new BusinessRuntimeException(ErrorCodes.DB_ROW_MAPPER_ERROR.getCode(), ErrorCodes.DB_ROW_MAPPER_ERROR.getDesc());
         }
 
@@ -160,7 +160,7 @@ public class ExcelResultSetHandler {
         Objects.requireNonNull(dataSource);
         Objects.requireNonNull(sql);
         if (stop) {
-            logger.warn("查询已经终止");
+            logger.warn(" query is stop ");
             return;
         }
 
@@ -225,6 +225,9 @@ public class ExcelResultSetHandler {
 
                 //每batchSize条数据则向队列添加数据
                 if (rowCount % batchSize == 0) {
+                    if (queue.size() > 20) {
+                        Thread.sleep(100);
+                    }
                     //超过队列最大元素 会进行阻塞 如果到了阻塞时间则为丢弃当前数据 todo
                     queue.offer(resultObject, 60 , TimeUnit.SECONDS);
                     resultObject = new LinkedList<>();

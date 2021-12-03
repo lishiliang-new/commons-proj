@@ -15,6 +15,7 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.lang.management.ManagementFactory;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,8 @@ public class ProjectUtils implements  EnvironmentAware, BeanDefinitionRegistryPo
 
     Logger logger = LoggerFactory.getLogger(ProjectUtils.class);
 
+    private String pid;
+
     private static Environment environment;
 
     private static Map<String, BeanDefinition> beanDefinitionMap = new LinkedHashMap<>();
@@ -38,6 +41,7 @@ public class ProjectUtils implements  EnvironmentAware, BeanDefinitionRegistryPo
 
     @Override
     public void setEnvironment(Environment environment) {
+        this.pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
         this.environment = environment;
         logger.info("\n\t---------环境变量初始化完成--------");
     }
