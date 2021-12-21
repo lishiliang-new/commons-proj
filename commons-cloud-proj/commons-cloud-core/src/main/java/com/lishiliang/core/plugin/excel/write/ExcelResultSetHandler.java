@@ -41,7 +41,7 @@ public class ExcelResultSetHandler {
     private int batchSize = 5000;
 
     //阻塞队列 传递数据
-    private BlockingQueue queue = new LinkedBlockingQueue(1000);
+    private Queue queue = new LinkedList();
     //开始标识
     private volatile boolean queryStart;
     //终止标识
@@ -225,18 +225,18 @@ public class ExcelResultSetHandler {
 
                 //每batchSize条数据则向队列添加数据
                 if (rowCount % batchSize == 0) {
-                    if (queue.size() > 20) {
+                    if (queue.size() > 50) {
                         Thread.sleep(100);
                     }
                     //超过队列最大元素 会进行阻塞 如果到了阻塞时间则为丢弃当前数据 todo
-                    queue.offer(resultObject, 60 , TimeUnit.SECONDS);
+                    queue.add(resultObject);
                     resultObject = new LinkedList<>();
                 }
             }
 
             //查询完成向队列中添加最后一批数据
             if (!resultObject.isEmpty()) {
-                queue.offer(resultObject, 60, TimeUnit.SECONDS);
+                queue.add(resultObject);
             }
             queryStart = false;
             logger.info("===> process row is end");
@@ -265,7 +265,7 @@ public class ExcelResultSetHandler {
 
 
 
-    public BlockingQueue getQueue() {
+    public Queue getQueue() {
         return this.queue;
     }
 

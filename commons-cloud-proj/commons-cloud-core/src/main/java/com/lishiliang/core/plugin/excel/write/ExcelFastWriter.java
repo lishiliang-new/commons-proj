@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.Queue;
 
 /**
  * @author lisl
@@ -142,7 +142,7 @@ public class ExcelFastWriter {
     private void createRow(SXSSFWorkbook workbook, MultiplyWriter multiplyWriter, List<SXSSFSheet> sheets, SheetInfo sheetInfo) {
         try {
             ExcelResultSetHandler rsHandler = sheetInfo.getRsHandler();
-            BlockingQueue<List<String[]>> queue = rsHandler.getQueue();
+            Queue<List<String[]>> queue = rsHandler.getQueue();
 
             SXSSFSheet sheet = sheets.remove(0);
             int headerLength = createHeader(workbook, sheet, sheetInfo);
@@ -218,6 +218,5 @@ public class ExcelFastWriter {
 
 
 
-    
 
 }
