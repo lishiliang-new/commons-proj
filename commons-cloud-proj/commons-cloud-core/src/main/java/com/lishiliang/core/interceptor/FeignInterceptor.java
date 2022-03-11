@@ -67,7 +67,7 @@ public class FeignInterceptor  {
 
     @Bean
     @ConditionalOnClass({RequestInterceptor.class, Feign.class})
-    public RequestInterceptor TargetUrlIterceptor() {
+    public RequestInterceptor targetUrlIterceptor() {
 
         return new RequestInterceptor() {
             @Override
